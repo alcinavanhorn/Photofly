@@ -33,18 +33,14 @@ class upload extends React.Component {
       imageSelected: false,
       uploading: false,
       caption: '',
-      progress: 0,
+      progress: 0
     };
   }
 
-  componentDidMount = () => {};
   //Check camera and gallery permissions
   checkPermissions = async () => {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({ camera: status });
-
-    const { statusRoll } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    this.setState({ cameraRoll: statusRoll });
+    await Permissions.askAsync(Permissions.CAMERA);
+    await Permissions.askAsync(Permissions.CAMERA_ROLL);
   };
 
 
@@ -92,7 +88,7 @@ class upload extends React.Component {
     } else {
       console.log('Upload cancelled');
       this.setState({
-        imageSelected: false,
+        imageSelected: false
       });
     }
   };
@@ -142,6 +138,27 @@ class upload extends React.Component {
       console.log('Already uploading');
     }
   };
+  
+  //Function to set up the upload and promise
+  uploadImage = async uri => {
+    var imageId = this.state.imageId;
+
+    this.setState({
+      uploading: true,
+    });
+
+    var filePath = imageId;
+
+    const oReq = new XMLHttpRequest();
+    oReq.open('GET', uri, true);
+    oReq.responseType = 'blob';
+    oReq.onload = () => {
+      const blob = oReq.response;
+      //Call function to complete upload with the new blob
+      this.completeUpload(filePath, blob);
+    };
+    oReq.send();
+  };
 
   //Function to complete the blob promise from upload function and upload the image to firebase storage
   completeUpload = (filePath, blob) => {
@@ -179,9 +196,9 @@ class upload extends React.Component {
       }
     );
   };
-
+  
   //Function to set the data to the database for uploaded images from storage
-  processImage = imageUrl => {
+  processImage = downloadURL => {
     var imageId = this.state.imageId;
     var userId = fire.auth().currentUser.uid;
     var dateTime = Date.now();
@@ -193,7 +210,7 @@ class upload extends React.Component {
       author: userId,
       caption: caption,
       timestamp: timestamp,
-      url: imageUrl,
+      url: downloadURL
     };
 
     //Add the photo to the feed
@@ -205,28 +222,6 @@ class upload extends React.Component {
     //Alerts the user that the upload is done and clears the upload page
     alert('Image uploaded');
     this.clearUpload();
-  };
-
-  //Function to set up the upload and promise
-  uploadImage = async uri => {
-    var imageId = this.state.imageId;
-
-    this.setState({
-      uploading: true,
-    });
-
-    //Sets up the image type to be uploaded
-    var filePath = imageId;
-
-    const oReq = new XMLHttpRequest();
-    oReq.open('GET', uri, true);
-    oReq.responseType = 'blob';
-    oReq.onload = () => {
-      const blob = oReq.response;
-      //Call function to complete upload with the new blob
-      this.completeUpload(filePath, blob);
-    };
-    oReq.send();
   };
 
   render() {
