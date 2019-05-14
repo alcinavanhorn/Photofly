@@ -17,7 +17,7 @@ class comments extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      commentList: [],
+      commentList: []
     };
   }
 
@@ -121,13 +121,12 @@ class comments extends React.Component {
           var data = snapshot.val();
           var commentList = that.state.commentList;
 
-          //If comment field has data, send the comment data to the addComment function
           for (var comment in data) {
             that.addComment(commentList, data, comment);
           }
         } else { //If no data exists in the comment snapshot, show empty comment
           that.setState({
-            commentList: [],
+            commentList: []
           });
         }
       })
@@ -137,7 +136,7 @@ class comments extends React.Component {
   //Adds a comment to the commentList
   addComment = (commentList, data, comment) => {
     var that = this;
-    var commentObj = data[comment]; //get comment data from the array
+    var commentObj = data[comment];
 
     database
       .ref('users')
@@ -148,13 +147,12 @@ class comments extends React.Component {
         const exists = snapshot.val() !== null;
         if (exists) data = snapshot.val();
 
-        //Pushes the new comment to the database
         commentList.push({
           id: comment,
           comment: commentObj.comment,
           timestamp: that.converter(commentObj.timestamp),
           author: data,
-          authorId: commentObj.author,
+          authorId: commentObj.author
         });
 
         that.setState({
@@ -176,7 +174,7 @@ class comments extends React.Component {
       var timestamp = Math.floor(dateTime / 1000);
 
       this.setState({
-        comment: '',
+        comment: ''
       });
 
       var commentObj = {
@@ -218,7 +216,6 @@ class comments extends React.Component {
           </TouchableOpacity>
         </View>
         {this.state.commentList.length != 0 ? (
-          //Show comments if they exist in the list
           <FlatList
             refreshing={this.state.refresh}
             data={this.state.commentList}
@@ -232,7 +229,7 @@ class comments extends React.Component {
                   style={{ padding: 5, width: '100%', flexDirection: 'row', justifyContent: 'space-between' }}>
                   <TouchableOpacity
                     onPress={() =>
-                      this.props.navigation.navigate('User', {
+                      this.props.navigation.navigate('Profile', {
                         userId: item.authorId,
                       })
                     }>
@@ -247,7 +244,6 @@ class comments extends React.Component {
             )}
           />
         ) : (
-            //If there are no comments, show empty screen
             <Text style={{ alignSelf: 'center', margin: 10 }}>
               No comments found
           </Text>
