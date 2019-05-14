@@ -11,7 +11,7 @@ class profile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loaded: false,
+      loading: false,
     };
   }
 
@@ -44,16 +44,15 @@ class profile extends React.Component {
       .then(function (snapshot) {
         const exists = snapshot.val() !== null;
         if (exists) var data = snapshot.val();
-        that.setState({ username: data, loaded: true });
+        that.setState({ username: data, loading: true });
       })
       .catch(error => console.log(error));
-
   };
 
   render() {
     return (
       <View style={styles.container}>
-        {this.state.loaded == false ? (
+        {this.state.loading == false ? (
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <Text>Loading</Text>
           </View>
