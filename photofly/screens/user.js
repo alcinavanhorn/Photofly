@@ -13,7 +13,7 @@ import Feed from '../components/feed.js';
 
 console.disableYellowBox = true; //disable Setting a timer for a long period of time warning
 
-class profile extends React.Component {
+class user extends React.Component {
   //bottom navigation options
   static navigationOptions = {
     tabBarIcon: ({ focused, tintColor }) => {
@@ -192,4 +192,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default profile;
+export default user;
